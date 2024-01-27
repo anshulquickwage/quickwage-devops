@@ -18,16 +18,25 @@ jobs:
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set region ${{ secrets.AWS_REGION }}
+          aws configute set output JSON
+          aws eks --region ap-south-1 update-kubeconfig --name eks
+          aws sts get-caller-identity
+          mkdir ~p ~/.aws/
+          cd ~/.aws
+          touch config
+          echo "[cloud-profile]
+                aws_access_key_id = ${{secrets.AWS_ACCESS_KEY_ID}}
+                aws_secret_access_key = ${{secrets.AWS_SECRET_ACCESS_KEY}}" > ~/.kube/config
 
       - name: Install kubectl
         run: |
           sudo apt-get update -q
           sudo apt-get install -y kubectl
 
-      - name: Set up kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+      # - name: Set up kubeconfig
+      #   run: |
+      #     mkdir -p ~/.kube
+      #     echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
       - name: Deploy to EKS
         run: |
