@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ewa-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ewa-backend
+  template:
+    metadata:
+      labels:
+        app: ewa-backend
+    spec:
+      containers:
+        - name: ewa-backend
+          image: anshulquickwage/quickwage-ewa-backend:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: docker-secret
