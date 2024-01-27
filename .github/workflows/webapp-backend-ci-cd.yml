@@ -13,28 +13,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region ${{ secrets.AWS_REGION }}
-          aws eks --region ap-south-1 update-kubeconfig --name eks
-          aws sts get-caller-identity
-          cd ~/.aws
-          touch config
-          echo "[cloud-profile]
-                aws_access_key_id = ${{secrets.AWS_ACCESS_KEY_ID}}
-                aws_secret_access_key = ${{secrets.AWS_SECRET_ACCESS_KEY}}" > ~/.kube/config
+     - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1
 
-      - name: Install kubectl
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y kubectl
+      # - name: Configure AWS credentials
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws configure set region ${{ secrets.AWS_REGION }}
+      #     aws eks --region ap-south-1 update-kubeconfig --name eks
+      #     aws sts get-caller-identity
+      #     cd ~/.aws
+      #     touch config
+      #     echo "[cloud-profile]
+      #           aws_access_key_id = ${{secrets.AWS_ACCESS_KEY_ID}}
+      #           aws_secret_access_key = ${{secrets.AWS_SECRET_ACCESS_KEY}}" > ~/.kube/config
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name eks
 
-      - name: Set up kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ env.KUBE_CONFIG }}" > ~/.kube/config
+      # - name: Install kubectl
+      #   run: |
+      #     sudo apt-get update -q
+      #     sudo apt-get install -y kubectl
+
+      # - name: Set up kubeconfig
+      #   run: |
+      #     mkdir -p ~/.kube
+      #     echo "${{ env.KUBE_CONFIG }}" > ~/.kube/config
 
       - name: Deploy to EKS
         run: |
