@@ -23,5 +23,5 @@ jobs:
       - name: Get into the directory
         run: |
           ls
-          cd quickwage-devops/helm-charts/quickwage-ewa-production
+          cd helm-charts/quickwage-ewa-production
           helm upgrade ewa-quickwage-backend . -n quickwage-production
