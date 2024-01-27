@@ -1,27 +1,35 @@
-name: Quickwage-webapp-backend-deployment-pipeline
+name: Deploy to EKS
 
 on:
   push:
-    branches: ['main']
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Configure AWS credentials
-        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region ${{ secrets.AWS_REGION }}
-
-      - name: Set up kubectl
-        uses: azure/k8s-set-context@v1
-        with:
-          kubeconfig: ${{ runner.workspace }}/kubeconfig.yaml
-
-      - name: Get into the directory
         run: |
-          ls
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Install kubectl
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y kubectl
+
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+
+      - name: Deploy to EKS
+        run: |
           cd helm-charts/quickwage-ewa-production
           helm upgrade ewa-quickwage-backend . -n quickwage-production
