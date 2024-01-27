@@ -31,10 +31,10 @@ jobs:
           sudo apt-get update -q
           sudo apt-get install -y kubectl
 
-      # - name: Set up kubeconfig
-      #   run: |
-      #     mkdir -p ~/.kube
-      #     echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+      - name: Set up kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ variables.KUBE_CONFIG }}" > ~/.kube/config
 
       - name: Deploy to EKS
         run: |
