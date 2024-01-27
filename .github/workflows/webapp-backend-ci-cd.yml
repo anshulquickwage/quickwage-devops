@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -20,8 +20,8 @@ jobs:
         with:
           kubeconfig: ${{ runner.workspace }}/kubeconfig.yaml
 
-      - name: Clone the repo and deploy Helm chart
+      - name: Get into the directory
         run: |
-          git clone https://github.com/anshulquickwage/quickwage-devops.git
+          ls
           cd quickwage-devops/helm-charts/quickwage-ewa-production
           helm upgrade ewa-quickwage-backend . -n quickwage-production
