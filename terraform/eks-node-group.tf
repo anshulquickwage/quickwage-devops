@@ -26,6 +26,13 @@ POLICY
 # Resource: aws_iam_role_policy_attachment
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment
 
+resource "aws_iam_role_policy_attachment" "amazon_ec2_full_access" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+
+    # The role the policy should be applied to
+    role = aws_iam_role.nodes_general.name
+}
+
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy_general" {
   # The ARN of the policy you want to apply.
   # https://github.com/SummitRoute/aws_managed_policies/blob/master/policies/AmazonEKSWorkerNodePolicy
@@ -77,10 +84,10 @@ resource "aws_eks_node_group" "nodes_general" {
   # Configuration block with scaling settings
   scaling_config {
     # Desired number of worker nodes.
-    desired_size = 1
+    desired_size = 2
 
     # Maximum number of worker nodes.
-    max_size = 1
+    max_size = 2
 
     # Minimum number of worker nodes.
     min_size = 1
@@ -95,13 +102,13 @@ resource "aws_eks_node_group" "nodes_general" {
   capacity_type = "ON_DEMAND"
 
   # Disk size in GiB for worker nodes
-  disk_size = 20
+  disk_size = 40
 
   # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   force_update_version = false
 
   # List of instance types associated with the EKS Node Group
-  instance_types = ["t3.small"]
+  instance_types = ["t2.large"]
 
   labels = {
     role = "nodes-general"
@@ -116,5 +123,6 @@ resource "aws_eks_node_group" "nodes_general" {
     aws_iam_role_policy_attachment.amazon_eks_worker_node_policy_general,
     aws_iam_role_policy_attachment.amazon_eks_cni_policy_general,
     aws_iam_role_policy_attachment.amazon_ec2_container_registry_read_only,
+    aws_iam_role_policy_attachment.amazon_ec2_full_access
   ]
 }
