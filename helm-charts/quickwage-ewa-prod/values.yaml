@@ -2,11 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: anshulquickwage/quickwage-ewa-backend
-  tag: 1.0.9
+  tag: 1.0.10
   pullPolicy: Always
 
 imagePullSecrets: [name: docker-secret]
@@ -47,22 +47,19 @@ service:
   port: 80
   protocol: TCP
   targetPort: 3000
-  type: LoadBalancer
+  type: ClusterIP
 
 ingress:
-  enabled: false
-  path: /
-  pathType: Prefix
-  backendPort: 3000
-  className: ""
+  enabled: true
+  className: "nginx"
+  defaultBackend: true
+  hosts:
+    - host: "*.example.com"
+      paths:
+        - path: "/api/v1"
+          pathType: "Prefix"
   annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-  defaultBackend:
-    service:
-      name: prod-quickwage-ewa-prod
-      port:
-        number: 80
+    nginx.ingress.kubernetes.io/rewrite-target: /
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -70,11 +67,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 250m
+    memory: 512Mi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 250m
+    memory: 512Mi
 
 # livenessProbe:
 #   httpGet:
@@ -89,8 +86,8 @@ autoscaling:
   enabled: true
   minReplicas: 1
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 60
 
 # Additional volumes on the output Deployment definition.
 volumes: []
