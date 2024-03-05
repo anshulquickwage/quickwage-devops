@@ -54,12 +54,16 @@ ingress:
   className: "nginx"
   defaultBackend: true
   hosts:
-    - host: "*.com"
+    - host: "api.quickwage.in"
       paths:
         - path: "/api/v1"
           pathType: "Prefix"
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  tls:
+    - secretName: "tls-secret" # Name of the Kubernetes Secret to store the TLS certificate and private key
+      hosts:
+        - "api.quickwage.in" # Hostnames associated with the TLS certificate
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
