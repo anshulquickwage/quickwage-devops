@@ -26,4 +26,5 @@ jobs:
       - name: Deploy to EKS
         run: |
           cd helm-charts/quickwage-ewa-prod
-          helm upgrade prod . -n ewa-backend-prod
+          helm uninstall prod -n ewa-backend-prod
+          helm install prod . -n ewa-backend-prod
