@@ -23,7 +23,7 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name eks
 
-      - name: Deploy to EKS
+      - name: Deploy on EKS
         run: |
           cd helm-charts/quickwage-ewa-prod
           helm uninstall prod -n ewa-backend-prod
