@@ -28,3 +28,8 @@ jobs:
           cd helm-charts/quickwage-ewa-prod
           helm uninstall prod -n ewa-backend-prod
           helm install prod . -n ewa-backend-prod
+      
+      - name: EKS deployment status
+        run: |
+          kubectl rollout status deployment/prod-quickwage-ewa-prod -n ewa-backend-prod
+      
