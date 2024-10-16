@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: anshulquickwage/quickwage-ewa-backend
-  tag: 2.8.0
+  tag: 2.8.1
   pullPolicy: Always
 
 imagePullSecrets: [name: docker-secret]
