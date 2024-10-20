@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: anshulquickwage/quickwage-ewa-backend
-  tag: 1.0.10
+  tag: 2.8.3
   pullPolicy: Always
 
 imagePullSecrets: [name: docker-secret]
@@ -56,7 +56,7 @@ ingress:
   hosts:
     - host: "api.quickwage.in"
       paths:
-        - path: "/api/v1"
+        - path: "/"
           pathType: "Prefix"
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -77,14 +77,14 @@ resources:
     cpu: 250m
     memory: 512Mi
 
-# livenessProbe:
-#   httpGet:
-#     path: /metrics
-#     port: 3000
-# readinessProbe:
-#   httpGet:
-#     path: /metrics
-#     port: 3000
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 3000
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 3000
 
 autoscaling:
   enabled: true
